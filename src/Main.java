@@ -10,6 +10,15 @@ public class Main {
         }
         return text.toString();
     }
+public static void incrementCounter( int length){
+        if (length==3){
+            counet3.getAndIncrement();
+        } else if (length==4) {
+            counet4.getAndIncrement();
+        }else if (length==5) {
+            counet5.getAndIncrement();
+        }
+}
 
     public static AtomicInteger counet3 = new AtomicInteger(0);
     public static AtomicInteger counet4 = new AtomicInteger(0);
@@ -23,44 +32,38 @@ public class Main {
         }
 
 
-        new Thread(() -> {
+        Thread isPolindrom = new Thread(() -> {
             for (String text : texts) {
                 if (text.equalsIgnoreCase(new StringBuilder(text).reverse().toString())) {
-                    counet4.addAndGet(1);
+                    incrementCounter(text.length());
                 }
             }
-        }).start();
+        });
 
         new Thread(() -> {
             for (String text : texts) {
-                if (text.length() == 3 &&
-                        text.charAt(0) == text.charAt(1) &&
-                        text.charAt(2) == text.charAt(1) &&
-                        text.charAt(0) == text.charAt(2)) {
-                    counet3.addAndGet(1);
+                for (int i = 0; i < text.length()-1; i++)
+                    if (text.charAt(i) == text.charAt(i + 1)) {
+                        incrementCounter(text.length());
+                    } else break;
                 }
-
-            }
         }).start();
-        Integer wordNum = 0;
+
 
         new Thread(() -> {
             for (String text : texts) {
-                if (text.length() == 5) {
+                for (int i = 0; i < text.length()-1; i++)
+                    if (Character.getNumericValue((text.charAt(i))) >=
+                            Character.getNumericValue((text.charAt(i + 1)))) {
+                        incrementCounter(text.length());
+                    } else break;
 
-                    for (int i = 0; i < 4; i++)
-                        if (Character.getNumericValue((text.charAt(i))) >=
-                                Character.getNumericValue((text.charAt(i + 1)))) {
-                            counet5.addAndGet(1);
-                        } else break;
-
-
-                }
             }
+
         }).start();
-        System.out.println(counet4);
-        System.out.println(counet3);
-        System.out.println(counet5);
+        System.out.println("Красивых слов с длинной 4: " + counet4);
+        System.out.println("Красивых слов с длинной 3: " + counet3);
+        System.out.println("Красивых слов с длинной 5: " + counet5);
 
 
     }
